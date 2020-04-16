@@ -292,6 +292,37 @@ Cleanup:
     return err;
 }
 
+ERR CreateWS_FileTemp(struct WMPStream** ppWS, char* szFilename, const char* szMode)
+{
+#ifdef WIN32
+    ERR err = WMP_errFileIO;
+#else
+    ERR err = WMP_errSuccess;
+    struct WMPStream* pWS = NULL;
+
+    Call(WMPAlloc((void** )ppWS, sizeof(**ppWS)));
+    pWS = *ppWS;
+
+    pWS->Close = CloseWS_File;
+    pWS->EOS = EOSWS_File;
+
+    pWS->Read = ReadWS_File;
+    pWS->Write = WriteWS_File;
+    //pWS->GetLine = GetLineWS_File;
+
+    pWS->SetPos = SetPosWS_File;
+    pWS->GetPos = GetPosWS_File;
+
+    int fd = mkstemp(szFilename);
+    FailIf(-1 == fd, WMP_errFileIO);
+    pWS->state.file.pFile = fdopen(fd, szMode);
+    FailIf(NULL == pWS->state.file.pFile, WMP_errFileIO);
+#endif
+
+Cleanup:
+    return err;
+}
+
 ERR CloseWS_File(struct WMPStream** ppWS)
 {
     ERR err = WMP_errSuccess;

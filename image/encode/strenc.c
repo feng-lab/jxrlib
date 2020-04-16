@@ -432,8 +432,8 @@ Int StrIOEncInit(CWMImageStrCodec* pSC)
 #if defined(_WINDOWS_) || defined(UNDER_CE)  // tmpnam does not exist in VS2005 WinCE CRT
         TCHAR szPath[MAX_PATH];
         DWORD cSize, j, k;
-#endif
         char * pFilename;
+#endif
 
         pSC->ppWStream = (struct WMPStream **)malloc(pSC->cNumBitIO * sizeof(struct WMPStream *));
         if(pSC->ppWStream == NULL) return ICERR_ERROR;
@@ -477,17 +477,15 @@ Int StrIOEncInit(CWMImageStrCodec* pSC)
                     }
                     pFilename[cSize] = '\0';
                 }
+                if(CreateWS_File(pSC->ppWStream + i, pFilename, "w+b") != ICERR_OK) return ICERR_ERROR;
 
 #else //DPK needs to support ANSI 
                 pSC->ppTempFile[i] = (char *)malloc(FILENAME_MAX * sizeof(char));
                 if(pSC->ppTempFile[i] == NULL) return ICERR_ERROR;
 
-                if ((pFilename = tmpnam(NULL)) == NULL)
-                    return ICERR_ERROR;                
-                strcpy(pSC->ppTempFile[i], pFilename);
+                snprintf(pSC->ppTempFile[i], L_tmpnam, "%s/tmp.XXXXXXXXXX", P_tmpdir);
+                if(CreateWS_FileTemp(pSC->ppWStream + i, pSC->ppTempFile[i], "w+b") != ICERR_OK) return ICERR_ERROR;
 #endif
-                if(CreateWS_File(pSC->ppWStream + i, pFilename, "w+b") != ICERR_OK) return ICERR_ERROR;                
-
             }
             else {
                 if(CreateWS_List(pSC->ppWStream + i) != ICERR_OK) return ICERR_ERROR;
