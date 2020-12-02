@@ -193,15 +193,15 @@ $(DIR_BUILD)/$(DECAPP): $(DIR_SRC)/$(DIR_EXEC)/$(DECAPP).c $(LIBRARIES)
 all: $(DIR_BUILD)/$(ENCAPP) $(DIR_BUILD)/$(DECAPP) $(LIBRARIES)
 
 clean:
-	rm -rf $(DIR_BUILD)/*App $(DIR_BUILD)/*.o $(DIR_BUILD)/libj*.a $(DIR_BUILD)/libj*.so $(DIR_BUILD)/libjxr.pc
+	rm -rf $(DIR_BUILD)/*App $(DIR_BUILD)/*.o $(DIR_BUILD)/libj*.a $(DIR_BUILD)/libj*.so # $(DIR_BUILD)/libjxr.pc
 
 # $(DIR_BUILD)/libjxr.pc: $(DIR_SRC)/libjxr.pc.in
 # 	@python -c 'import os; d = { "DIR_INSTALL": "$(DIR_INSTALL)", "JXR_VERSION": "$(JXR_VERSION)", "JXR_ENDIAN": "$(ENDIANFLAG)" }; fin = open("$<", "r"); fout = open("$@", "w+"); fout.writelines( [ l % d for l in fin.readlines()])'
 
-install: all $(DIR_BUILD)/libjxr.pc
+install: all # $(DIR_BUILD)/libjxr.pc
 	install -d $(DIR_INSTALL)/lib/pkgconfig $(DIR_INSTALL)/bin $(DIR_INSTALL)/include/libjxr/common  $(DIR_INSTALL)/include/libjxr/image/x86 $(DIR_INSTALL)/include/libjxr/glue $(DIR_INSTALL)/include/libjxr/test $(DIR_INSTALL)/share/doc/jxr-$(JXR_VERSION)
 	install $(LIBRARIES) $(DIR_INSTALL)/lib
-	install -m 644 $(DIR_BUILD)/libjxr.pc $(DIR_INSTALL)/lib/pkgconfig
+	# install -m 644 $(DIR_BUILD)/libjxr.pc $(DIR_INSTALL)/lib/pkgconfig
 	install $(DIR_BUILD)/$(ENCAPP) $(DIR_BUILD)/$(DECAPP) $(DIR_INSTALL)/bin
 	install -m 644 $(DIR_SRC)/common/include/*.h $(DIR_INSTALL)/include/libjxr/common
 	install -m 644 $(DIR_SRC)/image/x86/*.h $(DIR_INSTALL)/include/libjxr/image/x86
